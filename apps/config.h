@@ -1,0 +1,1 @@
+#define CONFIGDIR "/etc"
