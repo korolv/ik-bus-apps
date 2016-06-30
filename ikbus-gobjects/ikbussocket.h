@@ -21,7 +21,7 @@
 #define _IKBUSSOCKET_H_
 
 #include <glib-object.h>
-#include "ikbusframe.h"
+#include <linux/ikbusframe.h>
 
 G_BEGIN_DECLS
 

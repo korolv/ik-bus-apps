@@ -96,55 +96,6 @@ static GKeyFile *load_config(const char *file)
     return keyfile;
 }
 
-static void check_config(GKeyFile *config)
-{
-    const gchar *valid_groups[] = { "Magazine", NULL };
-    gchar **keys;
-    gint i;
-
-    if (!config)
-        return;
-
-    keys = g_key_file_get_groups(config, NULL);
-
-    for (i = 0; keys != NULL && keys[i] != NULL; i++) {
-        const gchar **group;
-        gboolean match = FALSE;
-
-        for (group = valid_groups; *group; group++) {
-            if (g_str_equal(keys[i], *group)) {
-                match = TRUE;
-                break;
-            }
-        }
-
-        if (!match)
-            g_warning("Unknown group %s in cdc.conf", keys[i]);
-    }
-
-    g_strfreev(keys);
-
-    keys = g_key_file_get_keys(config, "Magazine", NULL, NULL);
-
-    for (i = 0; keys != NULL && keys[i] != NULL; i++) {
-        gboolean found;
-        guint j;
-
-        found = FALSE;
-        for (j = 0; j < G_N_ELEMENTS(supported_options); j++) {
-            if (g_str_equal(keys[i], supported_options[j])) {
-                found = TRUE;
-                break;
-            }
-        }
-
-        if (!found)
-            g_warning("Unknown key %s in %s", keys[i], CONFIG_NAME);
-    }
-
-    g_strfreev(keys);
-}
-
 /* Get players from config file */
 static void parse_config(GKeyFile *config)
 {
@@ -158,7 +109,7 @@ static void parse_config(GKeyFile *config)
     for (i = 0; i < MAGAZINE_SIZE; i++) {
         str = g_key_file_get_string(config, "Magazine", supported_options[i], &err);
         if (err) {
-            g_print("%s", err->message);
+            g_info("%s\n", err->message);
             g_clear_error(&err);
         } else {
             cd_changer.magazine[i].mpris_name = str;
